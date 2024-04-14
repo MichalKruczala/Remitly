@@ -4,10 +4,13 @@ import org.json.JSONObject;
 public class JsonWerificator {
 
     DataValidator dataValidator = new DataValidator();
-    boolean hasPolicyName;
+    boolean hasPolicyName = false;
     boolean hasPolicyDocument = false;
     boolean hasVersion = false;
     boolean hasStatement = false;
+    boolean hasEffect = false;
+    boolean hasAction = false;
+    boolean hasResource = false;
 
     public boolean validateJson(String jsonAsString) {
         JSONObject json = new JSONObject(jsonAsString);
@@ -16,7 +19,7 @@ public class JsonWerificator {
             String policyName = json.getString("PolicyName");
             verifyPolicyName(policyName);
         }
-        hasPolicyName =json.has("PolicyDocument");
+        hasPolicyName = json.has("PolicyDocument");
         if (hasPolicyDocument) {
             JSONObject policyDocument = json.getJSONObject("PolicyDocument");
             hasVersion = policyDocument.has("Version");
@@ -32,17 +35,22 @@ public class JsonWerificator {
                         for (int i = 0; i < statementArray.length(); i++) {
                             JSONObject singleStatement = statementArray.getJSONObject(i);
                             boolean hasSid = singleStatement.has("Sid");
-                            boolean hasEffect = singleStatement.has("Effect");
-                            boolean hasAction = singleStatement.has("Action");
+                            hasEffect = singleStatement.has("Effect");
+                            if (hasEffect) {
+                                String effect = singleStatement.getString("Effect");
+                                verifyEffect(effect);
+                            }
+                            hasAction = singleStatement.has("Action");
                             if (hasAction) {
                                 JSONArray action = singleStatement.getJSONArray("Action");
                                 if (!action.isEmpty()) {
-                                    System.out.println(action); // Elementy z listy Action
+                                    System.out.println(action);
                                 }
                             }
-                            boolean hasResource = singleStatement.has("Resource");
+                            hasResource = singleStatement.has("Resource");
 
                             if (hasResource) {
+
                                 String resource = singleStatement.getString("Resource");
                                 if (resource.equals("*")) {
                                     throw new SingleAsteriskException();
@@ -87,6 +95,16 @@ public class JsonWerificator {
             }
         } catch (WrongInputDataJsonException e) {
             System.out.println(e.getMessage("Wrong data in PolicyName"));
+        }
+    }
+
+    private void verifyEffect(String effect) {
+        try {
+            if (!dataValidator.isValidEffect(effect)) {
+                throw new WrongInputDataJsonException();
+            }
+        } catch (WrongInputDataJsonException e) {
+            System.out.println(e.getMessage("Wrong data in Effect"));
         }
     }
 }
