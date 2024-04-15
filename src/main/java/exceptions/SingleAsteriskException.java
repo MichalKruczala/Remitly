@@ -1,3 +1,5 @@
+package exceptions;
+
 public class SingleAsteriskException extends RuntimeException{
     @Override
     public String getMessage() {

@@ -5,9 +5,9 @@
 public class Main {
     public static void main(String[] args) {
 
-        JsonWerificator jsonWerificator = new JsonWerificator();
+        JsonVerificator jsonVerificator = new JsonVerificator();
 
-        jsonWerificator.validateJson(jsonAsString);
+        System.out.println(jsonVerificator.validateJson(jsonAsString));
 
     }
     static String jsonAsString = "{\n" +
@@ -22,7 +22,7 @@ public class Main {
             "                    \"iam:ListRoles\",\n" +
             "                    \"iam:ListUsers\"\n" +
             "                ],\n" +
-            "                \"Resource\": \"*\"\n" +
+            "                \"Resource\": \"**\"\n" +
             "            }\n" +
             "        ]\n" +
             "    }\n" +
