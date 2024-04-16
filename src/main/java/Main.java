@@ -1,12 +1,26 @@
+import exceptions.MissingElementInJsonException;
+import exceptions.SingleAsteriskException;
+import exceptions.WrongValueJsonException;
+import org.json.JSONException;
+
 public class Main {
     public static void main(String[] args) {
 
         JsonVerificator jsonVerificator = new JsonVerificator();
         FileReaderService frs = new FileReaderService();
         String jsonAsString = frs.readFileToString("src/main/resources/JSON.txt");
-        System.out.println(jsonVerificator.validateJson(jsonAsString));
+        try {
+            jsonVerificator.validateJson(jsonAsString);
+        } catch (JSONException e) {
+            System.out.println("Wrong format JSON data provided");
+        } catch (WrongValueJsonException w) {
+            w.getMessage();
+        } catch (SingleAsteriskException e) {
+            e.getMessage();
+        } catch (MissingElementInJsonException e) {
+            e.getMessage();
+        }
     }
-
 
     static String getJson1 = "{\n" +
             "    \"PolicyName\": \"root\",\n" +
