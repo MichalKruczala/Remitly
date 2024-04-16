@@ -1,5 +1,4 @@
 import exceptions.MissingElementInJsonException;
-import exceptions.SingleAsteriskException;
 import exceptions.WrongValueJsonException;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
@@ -9,14 +8,14 @@ import org.junit.jupiter.api.Test;
 public class JsonVerificatorTest {
 
     @Test
-    public void shouldReturnFalseIfFindSingleAsteriskInFieldResource() throws MissingElementInJsonException, WrongValueJsonException, SingleAsteriskException {
+    public void shouldReturnFalseIfFindSingleAsteriskInFieldResource() throws MissingElementInJsonException, WrongValueJsonException {
         JsonVerificator jV = new JsonVerificator();
         boolean value = jV.validateJson(jsonStringWithSingleAsterisk);
         Assertions.assertFalse(value);
     }
 
     @Test
-    public void shouldReturnTrueIfNotSingleAsteriskInFieldResource() throws MissingElementInJsonException, WrongValueJsonException, SingleAsteriskException {
+    public void shouldReturnTrueIfNotSingleAsteriskInFieldResource() throws MissingElementInJsonException, WrongValueJsonException{
         JsonVerificator jV = new JsonVerificator();
         boolean value = jV.validateJson(jsonStringWithoutSingleAsterisk);
         Assertions.assertTrue(value);

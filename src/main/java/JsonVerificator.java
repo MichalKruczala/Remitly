@@ -1,5 +1,4 @@
 import exceptions.MissingElementInJsonException;
-import exceptions.SingleAsteriskException;
 import exceptions.WrongValueJsonException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,7 +15,7 @@ public class JsonVerificator {
     boolean hasResource = false;
     DataValidator dataValidator = new DataValidator();
 
-    public boolean validateJson(String jsonAsString) throws MissingElementInJsonException, WrongValueJsonException, SingleAsteriskException {
+    public boolean validateJson(String jsonAsString) throws MissingElementInJsonException, WrongValueJsonException {
 
         JSONObject json = new JSONObject(jsonAsString);
         hasPolicyName = json.has("PolicyName");
@@ -44,7 +43,7 @@ public class JsonVerificator {
                         hasEffect = singleStatement.has("Effect");
                         if (hasEffect) {
                             String effect = singleStatement.getString("Effect");
-                            dataValidator.isValidEffect(effect);
+                            dataValidator.validateEffect(effect);
                         } else throw new MissingElementInJsonException("Missing Effect");
                         hasAction = singleStatement.has("Action");
                         if (hasAction) {
@@ -54,7 +53,7 @@ public class JsonVerificator {
                         if (hasResource) {
                             String resource = singleStatement.getString("Resource");
                             if (resource.equals("*")) {
-                                throw new SingleAsteriskException();
+                                return false;
                             }
                         } else throw new MissingElementInJsonException("Missing Resource");
                     }

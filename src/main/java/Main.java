@@ -1,5 +1,4 @@
 import exceptions.MissingElementInJsonException;
-import exceptions.SingleAsteriskException;
 import exceptions.WrongValueJsonException;
 import org.json.JSONException;
 
@@ -15,8 +14,6 @@ public class Main {
             System.out.println("Wrong format JSON data provided");
         } catch (WrongValueJsonException w) {
             w.getMessage();
-        } catch (SingleAsteriskException e) {
-            e.getMessage();
         } catch (MissingElementInJsonException e) {
             e.getMessage();
         }

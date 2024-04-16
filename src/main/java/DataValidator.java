@@ -7,11 +7,9 @@ import java.util.regex.Pattern;
 
 public class DataValidator {
     String regexPolicyName = "^[\\w+=,.@-]{1,128}$";
-
     String regexPolicyDocument = "^[\\u0009\\u000A\\u000D\\u0020-\\u00FF]{1,131072}$";
     List<String> versionDatesList = List.of("2012-10-17", "2012-10-17", "2008-10-17");
     List<String> effectList = List.of("Allow", "Deny");
-
 
     public void validatePolicyName(String policyName) throws WrongValueJsonException {
         Pattern pattern = Pattern.compile(regexPolicyName);
@@ -38,7 +36,7 @@ public class DataValidator {
 
     }
 
-    public void isValidEffect(String effect) throws WrongValueJsonException {
+    public void validateEffect(String effect) throws WrongValueJsonException {
         for (String singleEffect : effectList) {
             if (singleEffect.equals(effect)) {
                 return;
