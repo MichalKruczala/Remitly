@@ -3,34 +3,49 @@ import exceptions.WrongValueJsonException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class JsonVerificator {
+import java.util.function.Consumer;
 
-    boolean hasPolicyName = false;
-    boolean hasPolicyDocument = false;
-    boolean hasVersion = false;
-    boolean hasSid = false;
-    boolean hasStatement = false;
-    boolean hasEffect = false;
-    boolean hasAction = false;
-    boolean hasResource = false;
+public class AwsJsonValidator {
+
     DataValidator dataValidator = new DataValidator();
 
     public boolean validateJson(String jsonAsString) throws MissingElementInJsonException, WrongValueJsonException {
 
         JSONObject json = new JSONObject(jsonAsString);
-        hasPolicyName = json.has("PolicyName");
-        if (hasPolicyName) {
-            String policyName = json.getString("PolicyName");
-            dataValidator.validatePolicyName(policyName);
-        } else throw new MissingElementInJsonException("Luck of Policy Name");
-        hasPolicyDocument = json.has("PolicyDocument");
-        if (hasPolicyDocument) {
-            JSONObject policyDocument = json.getJSONObject("PolicyDocument");
+        hasRequiredField(json, "PolicyName");
+        dataValidator.validatePolicyName(json.getString("PolicyName"));
+
+        hasRequiredField(json, "PolicyDocument");
+        JSONObject policyDocument = json.getJSONObject("PolicyDocument");
+
+        hasRequiredField(policyDocument, "Version");
+        dataValidator.validateVersion(policyDocument.getString("Version"));
+
+        hasRequiredField(policyDocument, "Statement");
+        JSONArray statementArrayNew = policyDocument.getJSONArray("Statement");
+
+        for (int i = 0; i < statementArrayNew.length(); i++) {
+            JSONObject singleStatement = statementArrayNew.getJSONObject(i);
+            hasRequiredField(singleStatement, "Sid");
+            hasRequiredField(singleStatement, "Effect");
+            dataValidator.validateEffect(singleStatement.getString("Effect"));
+            hasRequiredField(singleStatement, "Action");
+            hasRequiredField(singleStatement, "Resource");
+            String resourceValue = singleStatement.getString("Resource");
+            if (resourceValue.equals("*")) {
+                return false;
+            }
+
+        }
+        return true;
+        /*if (hasPolicyDocument) {
+            JSONObject policyDocument1 = json.getJSONObject("PolicyDocument");
             dataValidator.validatePolicyDocument(policyDocument.toString());
             hasVersion = policyDocument.has("Version");
             if (hasVersion) {
                 String version = policyDocument.getString("Version");
                 dataValidator.validateVersion(version);
+
             } else throw new MissingElementInJsonException("Missing Vesion");
             hasStatement = policyDocument.has("Statement");
             if (hasStatement) {
@@ -60,7 +75,13 @@ public class JsonVerificator {
                 } else throw new MissingElementInJsonException("missing statement list of Objects");
             }
         } else throw new MissingElementInJsonException("Missing Policy Document");
-        return true;
+        return true;*/
+    }
+
+    private void hasRequiredField(JSONObject json, String fieldName) throws MissingElementInJsonException {
+        if (!json.has(fieldName)) {
+            throw new MissingElementInJsonException("Luck of Field -" + fieldName);
+        }
     }
 }
 

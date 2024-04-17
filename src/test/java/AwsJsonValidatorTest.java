@@ -5,32 +5,33 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 
-public class JsonVerificatorTest {
+public class AwsJsonValidatorTest {
+
 
     @Test
     public void shouldReturnFalseIfFindSingleAsteriskInFieldResource() throws MissingElementInJsonException, WrongValueJsonException {
-        JsonVerificator jV = new JsonVerificator();
+        AwsJsonValidator jV = new AwsJsonValidator();
         boolean value = jV.validateJson(jsonStringWithSingleAsterisk);
         Assertions.assertFalse(value);
     }
 
     @Test
     public void shouldReturnTrueIfNotSingleAsteriskInFieldResource() throws MissingElementInJsonException, WrongValueJsonException{
-        JsonVerificator jV = new JsonVerificator();
+        AwsJsonValidator jV = new AwsJsonValidator();
         boolean value = jV.validateJson(jsonStringWithoutSingleAsterisk);
         Assertions.assertTrue(value);
     }
 
     @Test
     public void shouldThrowJSONExceptionIfWrongStructureJsonProvided() {
-        JsonVerificator jV = new JsonVerificator();
+        AwsJsonValidator jV = new AwsJsonValidator();
         Assertions.assertThrows(JSONException.class, () -> jV.validateJson(wrongStructureJsonString));
 
     }
 
     @Test
     public void shouldThrowMissingElementInJsonExceptionIfMissingElement() {
-        JsonVerificator jV = new JsonVerificator();
+        AwsJsonValidator jV = new AwsJsonValidator();
         Assertions.assertThrows(MissingElementInJsonException.class, () -> jV.validateJson(jsonStringWithMissingElement));
 
     }

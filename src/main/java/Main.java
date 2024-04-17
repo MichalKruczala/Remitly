@@ -2,70 +2,33 @@ import exceptions.MissingElementInJsonException;
 import exceptions.WrongValueJsonException;
 import org.json.JSONException;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 public class Main {
     public static void main(String[] args) {
 
-        JsonVerificator jsonVerificator = new JsonVerificator();
-        FileReaderService frs = new FileReaderService();
-        String jsonAsString = frs.readFileToString("src/main/resources/JSON.txt");
         try {
-            jsonVerificator.validateJson(jsonAsString);
+            args = new String[]{"/Users/michalkruczala/Documents/Projekty Java/Remitly/src/main/resources/JSON.json"};
+            if (args.length != 1) {
+                System.out.println("Path to file required");
+                return;
+            }
+            String content = Files.readString(Path.of(args[0]));
+            AwsJsonValidator awsJsonValidator = new AwsJsonValidator();
+
+            System.out.println(awsJsonValidator.validateJson(content));
         } catch (JSONException e) {
             System.out.println("Wrong format JSON data provided");
-        } catch (WrongValueJsonException w) {
-            w.getMessage();
+        } catch (WrongValueJsonException e) {
+            System.out.println("Wrong value" + e.getMessage());
         } catch (MissingElementInJsonException e) {
-            e.getMessage();
+            System.out.println("Missing element" + e.getMessage());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
-
-    static String getJson1 = "{\n" +
-            "    \"PolicyName\": \"root\",\n" +
-            "    \"PolicyDocument\": {\n" +
-            "        \"Version\": \"2012-10-17\",\n" +
-            "        \"Statement\": [\n" +
-            "            {\n" +
-            "                \"Sid\": \"IamListAccess\",\n" +
-            "                \"Effect\": \"Allow\",\n" +
-            "                \"Action\": [\n" +
-            "                    \"iam:ListRoles\",\n" +
-            "                    \"iam:ListUsers\"\n" +
-            "                ],\n" +
-            "                \"Resource\": \"*\"\n" +
-            "            }\n" +
-            "        ]\n" +
-            "    }\n" +
-            "}\n";
-    static String getJson2 = "{\n" +
-            "  \"Version\": \"2012-10-17\",\n" +
-            "  \"Statement\": [\n" +
-            "    {\n" +
-            "      \"Sid\": \"FirstStatement\",\n" +
-            "      \"Effect\": \"Allow\",\n" +
-            "      \"Action\": [\"iam:ChangePassword\"],\n" +
-            "      \"Resource\": \"*\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"Sid\": \"SecondStatement\",\n" +
-            "      \"Effect\": \"Allow\",\n" +
-            "      \"Action\": \"s3:ListAllMyBuckets\",\n" +
-            "      \"Resource\": \"*\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"Sid\": \"ThirdStatement\",\n" +
-            "      \"Effect\": \"Allow\",\n" +
-            "      \"Action\": [\n" +
-            "        \"s3:List*\",\n" +
-            "        \"s3:Get*\"\n" +
-            "      ],\n" +
-            "      \"Resource\": [\n" +
-            "        \"arn:aws:s3:::confidential-data\",\n" +
-            "        \"arn:aws:s3:::confidential-data/*\"\n" +
-            "      ],\n" +
-            "      \"Condition\": {\"Bool\": {\"aws:MultiFactorAuthPresent\": \"true\"}}\n" +
-            "    }\n" +
-            "  ]\n" +
-            "}";
 }
 
 

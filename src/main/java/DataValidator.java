@@ -11,13 +11,14 @@ public class DataValidator {
     List<String> versionDatesList = List.of("2012-10-17", "2012-10-17", "2008-10-17");
     List<String> effectList = List.of("Allow", "Deny");
 
-    public void validatePolicyName(String policyName) throws WrongValueJsonException {
+    public void validatePolicyName(String policyValue) throws WrongValueJsonException {
         Pattern pattern = Pattern.compile(regexPolicyName);
-        Matcher matcher = pattern.matcher(policyName);
+        Matcher matcher = pattern.matcher(policyValue);
         if (!matcher.matches()) {
             throw new WrongValueJsonException("Wrong data in PolicyName");
         }
     }
+
 
     public void validatePolicyDocument(String policyDocument) throws WrongValueJsonException {
         Pattern pattern = Pattern.compile(regexPolicyDocument);
@@ -28,20 +29,16 @@ public class DataValidator {
     }
 
     public void validateVersion(String version) throws WrongValueJsonException {
-        for (String versionDate : versionDatesList) {
-            if (versionDate.equals(version)) {
-                return;
-            } else throw new WrongValueJsonException("Wrong data in Version");
+        if (!versionDatesList.stream().anyMatch((String element) -> element.equals(version))) {
+            throw new WrongValueJsonException("Wrong data in Version");
         }
-
     }
 
+
     public void validateEffect(String effect) throws WrongValueJsonException {
-        for (String singleEffect : effectList) {
-            if (singleEffect.equals(effect)) {
-                return;
-            }
+
+        if (!effectList.stream().anyMatch((String element) -> element.equals(effect))) {
+            throw new WrongValueJsonException("Wrong data in effect");
         }
-        throw new WrongValueJsonException("Wrong data in effect");
     }
 }
