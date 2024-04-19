@@ -3,8 +3,6 @@ import exceptions.WrongValueJsonException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.function.Consumer;
-
 public class AwsJsonValidator {
 
     DataValidator dataValidator = new DataValidator();
@@ -35,52 +33,13 @@ public class AwsJsonValidator {
             if (resourceValue.equals("*")) {
                 return false;
             }
-
         }
         return true;
-        /*if (hasPolicyDocument) {
-            JSONObject policyDocument1 = json.getJSONObject("PolicyDocument");
-            dataValidator.validatePolicyDocument(policyDocument.toString());
-            hasVersion = policyDocument.has("Version");
-            if (hasVersion) {
-                String version = policyDocument.getString("Version");
-                dataValidator.validateVersion(version);
-
-            } else throw new MissingElementInJsonException("Missing Vesion");
-            hasStatement = policyDocument.has("Statement");
-            if (hasStatement) {
-                JSONArray statementArray = policyDocument.getJSONArray("Statement");
-                if (!statementArray.isEmpty()) {
-                    for (int i = 0; i < statementArray.length(); i++) {
-                        JSONObject singleStatement = statementArray.getJSONObject(i);
-                        hasSid = singleStatement.has("Sid");
-                        singleStatement.getString("Sid");
-                        hasEffect = singleStatement.has("Effect");
-                        if (hasEffect) {
-                            String effect = singleStatement.getString("Effect");
-                            dataValidator.validateEffect(effect);
-                        } else throw new MissingElementInJsonException("Missing Effect");
-                        hasAction = singleStatement.has("Action");
-                        if (hasAction) {
-                            singleStatement.getJSONArray("Action");
-                        } else throw new MissingElementInJsonException("Missing Action");
-                        hasResource = singleStatement.has("Resource");
-                        if (hasResource) {
-                            String resource = singleStatement.getString("Resource");
-                            if (resource.equals("*")) {
-                                return false;
-                            }
-                        } else throw new MissingElementInJsonException("Missing Resource");
-                    }
-                } else throw new MissingElementInJsonException("missing statement list of Objects");
-            }
-        } else throw new MissingElementInJsonException("Missing Policy Document");
-        return true;*/
     }
 
     private void hasRequiredField(JSONObject json, String fieldName) throws MissingElementInJsonException {
         if (!json.has(fieldName)) {
-            throw new MissingElementInJsonException("Luck of Field -" + fieldName);
+            throw new MissingElementInJsonException("Missing Field -" + fieldName);
         }
     }
 }

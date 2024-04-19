@@ -2,110 +2,63 @@ import exceptions.MissingElementInJsonException;
 import exceptions.WrongValueJsonException;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 
 public class AwsJsonValidatorTest {
 
+    private final AwsJsonValidator jsonValidator;
+
+    private static String jsonWithSingleAsterisk;
+    private static String jsonWithWrongStructure;
+    private static String jsonWithMissingElement;
+    private static String jsonWithoutSingleAsterisk;
+
+
+    public AwsJsonValidatorTest() {
+        jsonValidator = new AwsJsonValidator();
+
+    }
+
+    @BeforeAll
+    public static void init() throws IOException {
+        jsonWithSingleAsterisk = Files.readString(Path.of("src/test/resources/singleAsterisk.json"));
+        jsonWithWrongStructure = Files.readString(Path.of("src/test/resources/wrongStructure.json"));
+        jsonWithMissingElement = Files.readString(Path.of("src/test/resources/missingElement.json"));
+        jsonWithoutSingleAsterisk = Files.readString(Path.of("src/test/resources/withoutSingleAsterisk.json"));
+    }
+
 
     @Test
     public void shouldReturnFalseIfFindSingleAsteriskInFieldResource() throws MissingElementInJsonException, WrongValueJsonException {
-        AwsJsonValidator jV = new AwsJsonValidator();
-        boolean value = jV.validateJson(jsonStringWithSingleAsterisk);
+        boolean value = jsonValidator.validateJson(jsonWithSingleAsterisk);
         Assertions.assertFalse(value);
     }
 
     @Test
-    public void shouldReturnTrueIfNotSingleAsteriskInFieldResource() throws MissingElementInJsonException, WrongValueJsonException{
-        AwsJsonValidator jV = new AwsJsonValidator();
-        boolean value = jV.validateJson(jsonStringWithoutSingleAsterisk);
+    public void shouldReturnTrueIfNotSingleAsteriskInFieldResource() throws MissingElementInJsonException, WrongValueJsonException {
+        boolean value = jsonValidator.validateJson(jsonWithoutSingleAsterisk);
         Assertions.assertTrue(value);
     }
 
     @Test
     public void shouldThrowJSONExceptionIfWrongStructureJsonProvided() {
-        AwsJsonValidator jV = new AwsJsonValidator();
-        Assertions.assertThrows(JSONException.class, () -> jV.validateJson(wrongStructureJsonString));
+        Assertions.assertThrows(JSONException.class, () -> jsonValidator.validateJson(jsonWithWrongStructure));
 
     }
 
     @Test
     public void shouldThrowMissingElementInJsonExceptionIfMissingElement() {
-        AwsJsonValidator jV = new AwsJsonValidator();
-        Assertions.assertThrows(MissingElementInJsonException.class, () -> jV.validateJson(jsonStringWithMissingElement));
+        Assertions.assertThrows(MissingElementInJsonException.class, () -> jsonValidator.validateJson(jsonWithMissingElement));
 
     }
 
-    private final String jsonStringWithSingleAsterisk = "{\n" +
-            "    \"PolicyName\": \"root\",\n" +
-            "    \"PolicyDocument\": {\n" +
-            "        \"Version\": \"2012-10-17\",\n" +
-            "        \"Statement\": [\n" +
-            "            {\n" +
-            "                \"Sid\": \"IamListAccess\",\n" +
-            "                \"Effect\": \"Allow\",\n" +
-            "                \"Action\": [\n" +
-            "                    \"iam:ListRoles\",\n" +
-            "                    \"iam:ListUsers\"\n" +
-            "                ],\n" +
-            "                \"Resource\": \"*\"\n" +
-            "            }\n" +
-            "        ]\n" +
-            "    }\n" +
-            "}";
 
-    private final String jsonStringWithoutSingleAsterisk = "{\n" +
-            "    \"PolicyName\": \"root\",\n" +
-            "    \"PolicyDocument\": {\n" +
-            "        \"Version\": \"2012-10-17\",\n" +
-            "        \"Statement\": [\n" +
-            "            {\n" +
-            "                \"Sid\": \"IamListAccess\",\n" +
-            "                \"Effect\": \"Allow\",\n" +
-            "                \"Action\": [\n" +
-            "                    \"iam:ListRoles\",\n" +
-            "                    \"iam:ListUsers\"\n" +
-            "                ],\n" +
-            "                \"Resource\": \"**\"\n" +
-            "            }\n" +
-            "        ]\n" +
-            "    }\n" +
-            "}";
-
-    private final String wrongStructureJsonString = "\n" +
-            "    \"PolicyName\": \"root\",\n" +
-            "    \"PolicyDocument\": {\n" +
-            "        \"Version\": \"2012-10-17\",\n" +
-            "        \"Statement\": [\n" +
-            "            {\n" +
-            "                \"Sid\": \"IamListAccess\",\n" +
-            "                \"Effect\": \"Allow\",\n" +
-            "                \"Action\": [\n" +
-            "                    \"iam:ListRoles\",\n" +
-            "                    \"iam:ListUsers\"\n" +
-            "                ],\n" +
-            "                \"Resource\": \"**\"\n" +
-            "            }\n" +
-            "        ]\n" +
-            "    }\n" +
-            "}";
-    private final String jsonStringWithMissingElement = "{\n" +
-            "    \"PolicyName\": \"root\",\n" +
-            "    \"PolicyDocument\": {\n" +
-            "        \"Version\": \"2012-10-17\",\n" +
-            "        \"Statement\": [\n" +
-            "            {\n" +
-            "                \"Sid\": \"IamListAccess\",\n" +
-            "                \"Effect\": \"Allow\",\n" +
-            "                \"Action\": [\n" +
-            "                    \"iam:ListRoles\",\n" +
-            "                    \"iam:ListUsers\"\n" +
-            "                ],\n" +
-            "                \n" +
-            "            }\n" +
-            "        ]\n" +
-            "    }\n" +
-            "}";
 }
 
 

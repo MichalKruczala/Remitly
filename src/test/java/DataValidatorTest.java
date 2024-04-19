@@ -3,75 +3,68 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class DataValidatorTest {
-    // validatePolicyName
+
+    private final DataValidator dataValidator;
+
+    public DataValidatorTest() {
+        dataValidator = new DataValidator();
+    }
+
     @Test
     public void shouldThrowExceptionIfIfPolicyNameContainsSpecialSign() {
-        DataValidator dV = new DataValidator();
-        Assertions.assertThrows(WrongValueJsonException.class, () -> dV.validatePolicyName("abc!123"));
+        Assertions.assertThrows(WrongValueJsonException.class, () -> dataValidator.validatePolicyName("abc!123"));
     }
 
     @Test
     public void shouldThrowExceptionIfPolicyNameHasEmptyString() {
-        DataValidator dV = new DataValidator();
-        Assertions.assertThrows(WrongValueJsonException.class, () -> dV.validatePolicyName(""));
+        Assertions.assertThrows(WrongValueJsonException.class, () -> dataValidator.validatePolicyName(""));
     }
 
     @Test
     public void shouldThrowExceptionIfPolicyNameHasIsTooLong() {
-        DataValidator dV = new DataValidator();
         String longString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[{]}|;:',<.>/?";
-        Assertions.assertThrows(WrongValueJsonException.class, () -> dV.validatePolicyName(longString));
+        Assertions.assertThrows(WrongValueJsonException.class, () -> dataValidator.validatePolicyName(longString));
     }
 
     @Test
     public void shouldThrowExceptionIfPolicyNameStringIsEmpty() {
-        DataValidator dV = new DataValidator();
-        Assertions.assertThrows(WrongValueJsonException.class, () -> dV.validatePolicyName(""));
+        Assertions.assertThrows(WrongValueJsonException.class, () -> dataValidator.validatePolicyName(""));
     }
 
-    // validatePolicyDocument
     @Test
-    public void shouldThrowExceptionIfPolicyDocumenttringIsTooLong() {
+    public void shouldThrowExceptionIfPolicyDocumentStringIsTooLong() {
         String str = "a".repeat(131073);
-        DataValidator dV = new DataValidator();
-        Assertions.assertThrows(WrongValueJsonException.class, () -> dV.validatePolicyDocument(str));
+        Assertions.assertThrows(WrongValueJsonException.class, () -> dataValidator.validatePolicyDocument(str));
     }
 
     @Test
     public void shouldThrowExceptionIfPolicyDocumentStringIsEmpty() {
-        DataValidator dV = new DataValidator();
-        Assertions.assertThrows(WrongValueJsonException.class, () -> dV.validatePolicyDocument(""));
+        Assertions.assertThrows(WrongValueJsonException.class, () -> dataValidator.validatePolicyDocument(""));
     }
 
     @Test
     public void shouldThrowExceptionIfPolicyDocumentContainWrongUnicodeSign() {
-        DataValidator dV = new DataValidator();
-        Assertions.assertThrows(WrongValueJsonException.class, () -> dV.validatePolicyName("\uD840\uDC00"));
+        Assertions.assertThrows(WrongValueJsonException.class, () -> dataValidator.validatePolicyName("\uD840\uDC00"));
     }
 
     @Test
     public void shouldNotThrowExceptionIfCorrectPolicyDocumentString() {
-        DataValidator dV = new DataValidator();
-        Assertions.assertDoesNotThrow(() -> dV.validatePolicyName("User123="));
+        Assertions.assertDoesNotThrow(() -> dataValidator.validatePolicyName("User123="));
     }
 
-    //  validateEffect
     @Test
     public void shouldThrowExceptionIfIncorrectEffectString() {
-        DataValidator dV = new DataValidator();
-        Assertions.assertThrows(WrongValueJsonException.class, () -> dV.validateEffect("dfgewferge"));
+        Assertions.assertThrows(WrongValueJsonException.class, () -> dataValidator.validateEffect("dfgewferge"));
     }
 
     @Test
     public void shouldNotThrowExceptionIfCorrectEffectString() {
-        DataValidator dV = new DataValidator();
-        Assertions.assertDoesNotThrow(() -> dV.validateEffect("Allow"));
+        Assertions.assertDoesNotThrow(() -> dataValidator.validateEffect("Allow"));
     }
 
     @Test
     public void shouldThrowExceptionIfStringEffectIsEmpty() {
-        DataValidator dV = new DataValidator();
-        Assertions.assertThrows(WrongValueJsonException.class, () -> dV.validateEffect(""));
+        Assertions.assertThrows(WrongValueJsonException.class, () -> dataValidator.validateEffect(""));
     }
 
 }
