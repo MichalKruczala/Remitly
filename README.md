@@ -7,5 +7,5 @@ mvn clean compile assembly:single
 ```
 Execute java file 
 ```
-java - jar Remitly-1.0-SNAPSHOT-jar-with-dependencies.jar "path-to-json-file"
+java -jar Remitly-1.0-SNAPSHOT-jar-with-dependencies.jar "path-to-json-file"
 ```
